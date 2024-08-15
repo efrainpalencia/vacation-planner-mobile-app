@@ -1,11 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="company_name">Tripfest</string>
     <string name="app_name">D308 Vacation Planner</string>
     <string name="travel_logo">Travel Logo</string>
     <string name="plan_your_vacation">
         Are you looking to plan a trip? Let us help you manifest your dream vacation!
     </string>
     <string name="enter">Enter</string>
-    <string name="company_name">Tripfest</string>
     <string name="add_vacation">
         Click on this to add a vacation to the list.
     </string>
