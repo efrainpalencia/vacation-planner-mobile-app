@@ -15,11 +15,14 @@ public class Vacation {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "vacation_id")
-    private Long vacationId;
+    private int vacationId;
 
     @NonNull
     @ColumnInfo(name = "title")
     private String title;
+
+    @ColumnInfo(name = "hotel")
+    private String hotel;
 
     @ColumnInfo(name = "start_date")
     @TypeConverters(Converters.class)
@@ -29,18 +32,19 @@ public class Vacation {
     @TypeConverters(Converters.class)
     private Date endDate;
 
-    public Vacation(Long vacationId, @NonNull String title, Date startDate, Date endDate) {
+    public Vacation(int vacationId, @NonNull String title, String hotel, Date startDate, Date endDate) {
         this.vacationId = vacationId;
         this.title = title;
+        this.hotel = hotel;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public Long getVacationId() {
+    public int getVacationId() {
         return vacationId;
     }
 
-    public void setVacationId(Long vacationId) {
+    public void setVacationId(int vacationId) {
         this.vacationId = vacationId;
     }
 
@@ -51,6 +55,14 @@ public class Vacation {
 
     public void setTitle(@NonNull String title) {
         this.title = title;
+    }
+
+    public String getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(String hotel) {
+        this.hotel = hotel;
     }
 
     public Date getStartDate() {

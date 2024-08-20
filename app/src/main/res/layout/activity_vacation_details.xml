@@ -5,9 +5,10 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.VacationDetails">
+    tools:context=".UI.VacationDetails">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="412dp"
         android:layout_height="300dp"
         android:contentDescription="@string/scrollable_view_details"
@@ -42,6 +43,8 @@
                     android:id="@+id/title_text_input"
                     android:layout_width="295dp"
                     android:layout_height="60dp"
+                    android:autofillHints="Add a title here."
+                    android:hint="@string/add_a_title_here"
                     android:inputType="text" />
             </LinearLayout>
 
@@ -64,6 +67,8 @@
                     android:id="@+id/hotel_text_input"
                     android:layout_width="295dp"
                     android:layout_height="60dp"
+                    android:autofillHints="Add a hotel here."
+                    android:hint="@string/add_a_hotel_here"
                     android:inputType="text" />
             </LinearLayout>
 
@@ -82,10 +87,12 @@
                     tools:layout_editor_absoluteX="87dp"
                     tools:layout_editor_absoluteY="319dp" />
 
-                <EditText
+                <TextView
                     android:id="@+id/start_text_input"
                     android:layout_width="295dp"
                     android:layout_height="60dp"
+                    android:autofillHints="Select a start date."
+                    android:hint="Select a start date."
                     android:inputType="text" />
             </LinearLayout>
 
@@ -104,15 +111,38 @@
                     tools:layout_editor_absoluteX="79dp"
                     tools:layout_editor_absoluteY="392dp" />
 
-                <EditText
+                <TextView
                     android:id="@+id/end_text_input"
                     android:layout_width="295dp"
                     android:layout_height="60dp"
+                    android:autofillHints="Select an end date."
+                    android:hint="Select an end date."
                     android:inputType="text" />
             </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/excursionRecyclerView"
+        android:layout_width="409dp"
+        android:layout_height="426dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="@string/add_an_excursion"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.912"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.96"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

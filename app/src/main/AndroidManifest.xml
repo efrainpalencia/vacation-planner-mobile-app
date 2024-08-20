@@ -13,20 +13,25 @@
         android:theme="@style/Theme.D308VacationPlanner"
         tools:targetApi="31">
         <activity
-            android:name=".activities.VacationDetails"
-            android:label="Vacation Details"
-            android:parentActivityName=".activities.VacationList"
-            android:exported="false" />
-        <activity
-            android:name=".activities.VacationList"
-            android:label="Vacation List"
-            android:parentActivityName=".activities.MainActivity"
+            android:name=".UI.ExcursionDetails"
             android:exported="false"
+            android:label="Excursion Details"
+            android:parentActivityName=".UI.VacationDetails" />
+        <activity
+            android:name=".UI.VacationDetails"
+            android:exported="false"
+            android:label="Vacation Details"
+            android:parentActivityName=".UI.VacationList" />
+        <activity
+            android:name=".UI.VacationList"
+            android:exported="false"
+            android:label="Vacation List"
+            android:parentActivityName=".UI.MainActivity"
             android:title="Vacation List" />
         <activity
-            android:name=".activities.MainActivity"
-            android:label="Main Activity"
+            android:name=".UI.MainActivity"
             android:exported="true"
+            android:label="Main Activity"
             android:title="Main Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -9,11 +9,18 @@
     <string name="add_vacation">
         Click on this to add a vacation to the list.
     </string>
-    <string name="menu_item_01">Item 1</string>
+    <string name="menu_item_01">Add sample data</string>
     <string name="menu_item_02">Item 2</string>
     <string name="scrollable_view_details">Scrollable view for vacation details</string>
     <string name="vacation_title">Title</string>
     <string name="vacation_hotel">Hotel</string>
     <string name="vacation_start_date">Start Date</string>
     <string name="hotel_end_date">End Date</string>
+    <string name="add_a_title_here">Add a title here.</string>
+    <string name="add_a_hotel_here">Add a hotel here.</string>
+    <string name="add_an_excursion">Add an excursion</string>
+    <string name="add_a_date">Add a date</string>
+    <string name="add_an_excursion_title">Add an excursion title</string>
+    <string name="excursion_title">Title</string>
+    <string name="scrollable_excursion_details_view">Scrollable excursion details view</string>
 </resources>

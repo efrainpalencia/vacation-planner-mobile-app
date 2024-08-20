@@ -1,4 +1,4 @@
-package com.example.d308vacationplanner.activities;
+package com.example.d308vacationplanner.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
