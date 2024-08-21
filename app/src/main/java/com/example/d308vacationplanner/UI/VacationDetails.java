@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,9 +42,13 @@ public class VacationDetails extends AppCompatActivity {
     String hotel;
     String oldStartDate;
     String oldEndDate;
+
     int vacationId;
+    Vacation currentVacation;
+
     EditText editTitle;
     EditText editHotel;
+
     TextView editStartDate;
     TextView editEndDate;
 
@@ -106,14 +111,19 @@ public class VacationDetails extends AppCompatActivity {
             public void onClick(View view) {
                 LocalDate date = LocalDate.now();
                 String info = editStartDate.getText().toString();
-                if (info.isEmpty()) {info = String.valueOf(date);}
+                if (info.isEmpty()) {
+                    info = String.valueOf(date);
+                }
                 try {
                     myCalenderStart.setTime(Objects.requireNonNull(sdf.parse(info)));
                 } catch (ParseException e) {
                     System.out.println(e.getMessage());
                 }
 
-                new DatePickerDialog(VacationDetails.this, startDate, myCalenderStart.get(Calendar.YEAR), myCalenderStart.get(Calendar.MONTH), myCalenderStart.get(Calendar.DAY_OF_MONTH)).show();
+                DatePickerDialog startDatePicker = new DatePickerDialog(VacationDetails.this, startDate, myCalenderStart.get(Calendar.YEAR), myCalenderStart.get(Calendar.MONTH), myCalenderStart.get(Calendar.DAY_OF_MONTH));
+                startDatePicker.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+                startDatePicker.show();
+
             }
         });
         startDate = new DatePickerDialog.OnDateSetListener() {
@@ -123,6 +133,7 @@ public class VacationDetails extends AppCompatActivity {
                 myCalenderStart.set(Calendar.MONTH, month);
                 myCalenderStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateLabelStart();
+
             }
         };
 
@@ -130,17 +141,21 @@ public class VacationDetails extends AppCompatActivity {
         editEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocalDate date = LocalDate.now();
-                String info = editEndDate.getText().toString();
-                if (info.isEmpty()) {info = String.valueOf(date);}
+//                LocalDate date = LocalDate.now();
+//                String info = editEndDate.getText().toString();
+//                if (info.isEmpty()) {
+//                    info = String.valueOf(date);
+//                }
+//
+//                try {
+//                    myCalenderEnd.setTime(Objects.requireNonNull(sdf.parse(info)));
+//                } catch (ParseException e) {
+//                    System.out.println(e.getMessage());
+//                }
 
-                try {
-                    myCalenderEnd.setTime(Objects.requireNonNull(sdf.parse(info)));
-                } catch (ParseException e) {
-                    System.out.println(e.getMessage());
-                }
-
-                new DatePickerDialog(VacationDetails.this, endDate, myCalenderEnd.get(Calendar.YEAR), myCalenderEnd.get(Calendar.MONTH), myCalenderEnd.get(Calendar.DAY_OF_MONTH)).show();
+              DatePickerDialog endDatePicker = new DatePickerDialog(VacationDetails.this, endDate, myCalenderEnd.get(Calendar.YEAR), myCalenderEnd.get(Calendar.MONTH), myCalenderEnd.get(Calendar.DAY_OF_MONTH));
+                endDatePicker.getDatePicker().setMinDate(myCalenderStart.getTimeInMillis());
+                endDatePicker.show();
             }
         });
         endDate = new DatePickerDialog.OnDateSetListener() {
@@ -149,7 +164,7 @@ public class VacationDetails extends AppCompatActivity {
                 myCalenderEnd.set(Calendar.YEAR, year);
                 myCalenderEnd.set(Calendar.MONTH, month);
                 myCalenderEnd.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabelEnd();
+                    updateLabelEnd();
             }
         };
         vacationId = getIntent().getIntExtra("id", -1);
@@ -204,9 +219,10 @@ public class VacationDetails extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()== android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             this.finish();
-            return true;}
+            return true;
+        }
         if (item.getItemId() == R.id.vacation_save) {
             Vacation vacation;
             SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy", Locale.US);
@@ -232,17 +248,40 @@ public class VacationDetails extends AppCompatActivity {
                 }
                 vacation = new Vacation(vacationId, editTitle.getText().toString(), editHotel.getText().toString(), startDate, endDate);
                 repository.insert(vacation);
+                Toast.makeText(VacationDetails.this, vacation.getTitle() + " was saved", Toast.LENGTH_LONG).show();
+                List<Vacation> allVacations = repository.getAllVacations();
+                RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
+                final VacationAdapter vacationAdapter = new VacationAdapter(this);
+                recyclerView.setAdapter(vacationAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                vacationAdapter.setVacations(allVacations);
             } else {
                 vacation = new Vacation(vacationId, editTitle.getText().toString(), editHotel.getText().toString(), startDate, endDate);
                 repository.update(vacation);
+                Toast.makeText(VacationDetails.this, vacation.getTitle() + " was updated", Toast.LENGTH_LONG).show();
+                List<Vacation> allVacations = repository.getAllVacations();
+                RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
+                final VacationAdapter vacationAdapter = new VacationAdapter(this);
+                recyclerView.setAdapter(vacationAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                vacationAdapter.setVacations(allVacations);
             }
             return true;
         }
 
-//        if (item.getItemId() == R.id.vacation_delete) {
-//            Vacation vacation;
-//
-//        }
+        if (item.getItemId() == R.id.vacation_delete) {
+            for (Vacation vac : repository.getAllVacations()) {
+                if (vac.getVacationId() == vacationId) {
+                    currentVacation = vac;
+                    repository.delete(currentVacation);
+                    Toast.makeText(VacationDetails.this, currentVacation.getTitle() + " was deleted", Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent(this, VacationList.class);
+                    startActivity(intent);
+                }
+            }
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -260,6 +299,6 @@ public class VacationDetails extends AppCompatActivity {
         }
         excursionAdapter.setExcursions(filteredExcursions);
 
-        //Toast.makeText(ProductDetails.this,"refresh list",Toast.LENGTH_LONG).show();
+//        Toast.makeText(VacationDetails.this,"refresh list",Toast.LENGTH_LONG).show();
     }
 }
