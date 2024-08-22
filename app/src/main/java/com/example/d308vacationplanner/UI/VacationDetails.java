@@ -27,6 +27,7 @@ import com.example.d308vacationplanner.database.Repository;
 import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -314,6 +315,36 @@ public class VacationDetails extends AppCompatActivity {
             alarmManager.set(AlarmManager.RTC_WAKEUP, triggerEndDate, sender);
 
             return true;
+        }
+
+        if (item.getItemId() == R.id.vacation_share) {
+            SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+            SimpleDateFormat newFormat = new SimpleDateFormat("EEE MMM dd yyyy", Locale.US);
+            String newStartDate = null;
+            String newEndDate = null;
+            try {
+                Date startDate = originalFormat.parse(oldStartDate);
+                Date endDate = originalFormat.parse(oldEndDate);
+                assert startDate != null;
+                assert endDate != null;
+                newStartDate = newFormat.format(startDate);
+                newEndDate = newFormat.format(endDate);
+            } catch (ParseException e) {
+                System.out.println(e.getMessage());
+            }
+            String message = String.format("Hi! Check out this message from Tripfesto - Vacation Planner:\nVacation Details\nDestination:\n %s\n\nHotel Accommodations:\n%s\n\nStart date:\n%s\n\nEnd Date:\n%s\n\n", title, hotel, newStartDate, newEndDate);
+
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+            sendIntent.putExtra(Intent.EXTRA_TITLE, "Text Message from Tripfesto");
+            sendIntent.setType("text/plain");
+
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
+
+            return true;
+
         }
 
         return super.onOptionsItemSelected(item);
