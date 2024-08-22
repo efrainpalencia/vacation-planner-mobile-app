@@ -23,4 +23,6 @@
     <string name="add_an_excursion_title">Add an excursion title</string>
     <string name="excursion_title">Title</string>
     <string name="scrollable_excursion_details_view">Scrollable excursion details view</string>
+    <string name="channel_name">Date Notification Channel</string>
+    <string name="channel_description">This channel sends a notification to the user about their scheduled vacation start and dates. Additionally, any excursion activity dates that the user may have selected.</string>
 </resources>

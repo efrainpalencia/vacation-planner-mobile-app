@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.d308vacationplanner.R;
 
 public class MainActivity extends AppCompatActivity {
+    static int numAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

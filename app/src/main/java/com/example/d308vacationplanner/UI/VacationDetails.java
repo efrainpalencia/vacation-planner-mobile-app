@@ -1,6 +1,9 @@
 package com.example.d308vacationplanner.UI;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -141,17 +144,6 @@ public class VacationDetails extends AppCompatActivity {
         editEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                LocalDate date = LocalDate.now();
-//                String info = editEndDate.getText().toString();
-//                if (info.isEmpty()) {
-//                    info = String.valueOf(date);
-//                }
-//
-//                try {
-//                    myCalenderEnd.setTime(Objects.requireNonNull(sdf.parse(info)));
-//                } catch (ParseException e) {
-//                    System.out.println(e.getMessage());
-//                }
 
               DatePickerDialog endDatePicker = new DatePickerDialog(VacationDetails.this, endDate, myCalenderEnd.get(Calendar.YEAR), myCalenderEnd.get(Calendar.MONTH), myCalenderEnd.get(Calendar.DAY_OF_MONTH));
                 endDatePicker.getDatePicker().setMinDate(myCalenderStart.getTimeInMillis());
@@ -249,22 +241,14 @@ public class VacationDetails extends AppCompatActivity {
                 vacation = new Vacation(vacationId, editTitle.getText().toString(), editHotel.getText().toString(), startDate, endDate);
                 repository.insert(vacation);
                 Toast.makeText(VacationDetails.this, vacation.getTitle() + " was saved", Toast.LENGTH_LONG).show();
-                List<Vacation> allVacations = repository.getAllVacations();
-                RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
-                final VacationAdapter vacationAdapter = new VacationAdapter(this);
-                recyclerView.setAdapter(vacationAdapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                vacationAdapter.setVacations(allVacations);
+                Intent intent = new Intent(this, VacationList.class);
+                startActivity(intent);
             } else {
                 vacation = new Vacation(vacationId, editTitle.getText().toString(), editHotel.getText().toString(), startDate, endDate);
                 repository.update(vacation);
                 Toast.makeText(VacationDetails.this, vacation.getTitle() + " was updated", Toast.LENGTH_LONG).show();
-                List<Vacation> allVacations = repository.getAllVacations();
-                RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
-                final VacationAdapter vacationAdapter = new VacationAdapter(this);
-                recyclerView.setAdapter(vacationAdapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                vacationAdapter.setVacations(allVacations);
+                Intent intent = new Intent(this, VacationList.class);
+                startActivity(intent);
             }
             return true;
         }
@@ -282,6 +266,56 @@ public class VacationDetails extends AppCompatActivity {
             }
             return true;
         }
+
+        if (item.getItemId() == R.id.vacation_start_date_notify) {
+            String dateFromScreen = editStartDate.getText().toString();
+            String formatter = "M/d/yyyy";
+            SimpleDateFormat sdf = new SimpleDateFormat(formatter, Locale.US);
+            Date myStartDate = null;
+
+                try {
+                    myStartDate = (sdf.parse(dateFromScreen));
+                } catch (ParseException e) {
+                    System.out.println(e.getMessage());
+                }
+            assert myStartDate != null;
+
+            Long triggerStartDate = myStartDate.getTime();
+            String message = String.format("Your %s vacation is starting", title);
+
+            Intent intent = new Intent(VacationDetails.this, AppReceiver.class);
+            intent.putExtra("key", message);
+            PendingIntent sender = PendingIntent.getBroadcast(VacationDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerStartDate, sender);
+
+            return true;
+        }
+
+        if (item.getItemId() == R.id.vacation_end_date_notify) {
+            String dateFromScreen = editEndDate.getText().toString();
+            String formatter = "M/d/yyyy";
+            SimpleDateFormat sdf = new SimpleDateFormat(formatter, Locale.US);
+            Date myEndDate = null;
+
+            try {
+                myEndDate = (sdf.parse(dateFromScreen));
+            } catch (ParseException e) {
+                System.out.println(e.getMessage());
+            }
+            assert myEndDate != null;
+
+            Long triggerEndDate = myEndDate.getTime();
+            String message = String.format("Your %s vacation is ending", title);
+            Intent intent = new Intent(VacationDetails.this, AppReceiver.class);
+            intent.putExtra("key", message);
+            PendingIntent sender = PendingIntent.getBroadcast(VacationDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerEndDate, sender);
+
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
