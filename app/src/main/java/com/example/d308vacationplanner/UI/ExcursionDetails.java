@@ -1,6 +1,10 @@
 package com.example.d308vacationplanner.UI;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +14,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -89,23 +94,13 @@ public class ExcursionDetails extends AppCompatActivity {
                 String formattedDate = targetFormat.format(date);
                 editExcursionDate = findViewById(R.id.excursion_date);
                 editExcursionDate.setText(formattedDate);
-//                System.out.println("Formatted Date: " + formattedDate);
+                System.out.println("Formatted Date: " + formattedDate);
             } catch (ParseException e) {
                 System.out.println(e.getMessage());
             }
         }
 
-        excursionDate = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                myCalendarDate.set(Calendar.YEAR, year);
-                myCalendarDate.set(Calendar.MONTH, month);
-                myCalendarDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
-
-            }
-        };
-
+        editExcursionDate = findViewById(R.id.excursion_date);
         editExcursionDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,13 +115,27 @@ public class ExcursionDetails extends AppCompatActivity {
                     System.out.println(e.getMessage());
                 }
 
+                String setStartDate = getIntent().getStringExtra("startDate");
+                String setEndDate = getIntent().getStringExtra("endDate");
+
                 DatePickerDialog startDatePicker = new DatePickerDialog(ExcursionDetails.this, excursionDate, myCalendarDate.get(Calendar.YEAR), myCalendarDate.get(Calendar.MONTH), myCalendarDate.get(Calendar.DAY_OF_MONTH));
-                startDatePicker.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+                startDatePicker.getDatePicker().setMinDate(Long.parseLong(setStartDate));
+                startDatePicker.getDatePicker().setMaxDate(Long.parseLong(setEndDate));
                 startDatePicker.show();
 
             }
         });
 
+        excursionDate = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                myCalendarDate.set(Calendar.YEAR, year);
+                myCalendarDate.set(Calendar.MONTH, month);
+                myCalendarDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+
+            }
+        };
     }
 
     private void updateLabel() {
@@ -176,6 +185,10 @@ public class ExcursionDetails extends AppCompatActivity {
                 excursion = new Excursion(excId, editExcursionTitle.getText().toString(), excursionDate, vacId);
                 repository.update(excursion);
             }
+
+            Toast.makeText(ExcursionDetails.this, currentExcursion.getExcursionTitle() + "was saved", Toast.LENGTH_LONG).show();
+            Intent intentOnResume = new Intent(this, VacationDetails.class);
+            startActivity(intentOnResume);
             return true;
         }
 
@@ -184,8 +197,38 @@ public class ExcursionDetails extends AppCompatActivity {
                 if (exc.getExcursionId() == excId) {
                     currentExcursion = exc;
                     repository.delete(currentExcursion);
+                    Toast.makeText(ExcursionDetails.this, currentExcursion.getExcursionTitle() + "was deleted", Toast.LENGTH_LONG).show();
                 }
             }
+            Intent intentOnResume = new Intent(this, VacationDetails.class);
+            startActivity(intentOnResume);
+        }
+
+        if (item.getItemId() == R.id.excursion_notify) {
+            String dateFromScreen = editExcursionDate.getText().toString();
+            String formatter = "M/d/yyyy";
+            SimpleDateFormat sdf = new SimpleDateFormat(formatter, Locale.US);
+            Date myDate = null;
+            try {
+                myDate = (sdf.parse(dateFromScreen));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            assert myDate != null;
+
+            Long triggerDate = myDate.getTime();
+            String message = String.format("Your %s excursion is starting", excursionTitle);
+
+            Intent intent = new Intent(ExcursionDetails.this, AppReceiver.class);
+            intent.putExtra("key", message);
+            PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerDate, sender);
+
+            Intent intentOnResume = new Intent(this, VacationDetails.class);
+            startActivity(intentOnResume);
+
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

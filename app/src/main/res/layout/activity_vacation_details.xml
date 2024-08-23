@@ -92,8 +92,7 @@
                     android:layout_width="295dp"
                     android:layout_height="60dp"
                     android:autofillHints="Select a start date."
-                    android:hint="Select a start date."
-                    android:inputType="text" />
+                    android:hint="Select a start date."/>
             </LinearLayout>
 
             <LinearLayout

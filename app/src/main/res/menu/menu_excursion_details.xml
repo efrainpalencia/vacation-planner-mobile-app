@@ -2,9 +2,10 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Save Excursion"
+    <item android:title="Update/Save"
         android:id="@+id/excursion_save"/>
-    <item android:title="Delete Excursion"
+    <item android:title="Delete"
         android:id="@+id/excursion_delete"/>
-    <item android:title="Item" />
+    <item android:title="Set an excursion Notification"
+        android:id="@+id/excursion_notify" />
 </menu>

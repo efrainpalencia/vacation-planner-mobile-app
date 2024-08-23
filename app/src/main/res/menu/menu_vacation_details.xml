@@ -2,13 +2,13 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Save Vacation"
+    <item android:title="Save"
         android:id="@+id/vacation_save" />
-    <item android:title="Delete Vacation"
+    <item android:title="Delete"
         android:id="@+id/vacation_delete"/>
-    <item android:title="Notify Start Date"
+    <item android:title="Set Start Date Notification"
         android:id="@+id/vacation_start_date_notify"/>
-    <item android:title="Notify End Date"
+    <item android:title="Set End Date Notification"
         android:id="@+id/vacation_end_date_notify"/>
     <item android:title="Share"
         android:id="@+id/vacation_share"/>

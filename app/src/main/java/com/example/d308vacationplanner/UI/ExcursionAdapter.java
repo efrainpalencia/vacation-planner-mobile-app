@@ -38,7 +38,7 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
                 final Excursion current = mExcursions.get(position);
                 Intent intent = new Intent(context, ExcursionDetails.class);
                 intent.putExtra("excursionTitle", current.getExcursionTitle());
-                intent.putExtra("date", current.getDate());
+                intent.putExtra("date", current.getDate().toString());
                 intent.putExtra("id", current.getExcursionId());
                 intent.putExtra("vacId", current.getVacationId());
                 context.startActivity(intent);
@@ -61,17 +61,7 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
             Excursion current = mExcursions.get(position);
             String name = current.getExcursionTitle();
             String currentExcDate = current.getDate().toString();
-            SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
-            SimpleDateFormat newFormat = new SimpleDateFormat("EEE MMM dd yyyy", Locale.US);
-            String newExcDate = null;
-
-            try {
-                Date excDate = originalFormat.parse(currentExcDate);
-                assert excDate != null;
-                newExcDate = newFormat.format(excDate);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
+            String newExcDate = getNewExcDate(currentExcDate);
 
 
             holder.excursionItemView.setText(name);
@@ -80,6 +70,21 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
             holder.excursionItemView.setText("No excursion found.");
             holder.excursionItemView.setText("No Vacation Id found.");
         }
+    }
+
+    private static @NonNull String getNewExcDate(String currentExcDate) {
+        SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+        SimpleDateFormat newFormat = new SimpleDateFormat("EEE MMM dd yyyy", Locale.US);
+        String newExcDate = null;
+
+        try {
+            Date excDate = originalFormat.parse(currentExcDate);
+            assert excDate != null;
+            newExcDate = newFormat.format(excDate);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return newExcDate;
     }
 
     @Override

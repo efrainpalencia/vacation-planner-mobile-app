@@ -68,7 +68,7 @@
                     android:layout_width="295dp"
                     android:layout_height="60dp"
                     android:autofillHints="Select a start date."
-                    android:hint="Select a date." />
+                    android:hint="Select a date."/>
             </LinearLayout>
 
             <Spinner
