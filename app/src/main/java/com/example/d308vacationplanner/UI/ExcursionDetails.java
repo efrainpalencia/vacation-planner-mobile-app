@@ -33,6 +33,7 @@ import java.util.Objects;
 
 public class ExcursionDetails extends AppCompatActivity {
     Repository repository;
+    Excursion currentExcursion;
 
     int vacId;
     int excId;
@@ -176,6 +177,15 @@ public class ExcursionDetails extends AppCompatActivity {
                 repository.update(excursion);
             }
             return true;
+        }
+
+        if (item.getItemId() == R.id.excursion_delete) {
+            for (Excursion exc : repository.getAllExcursions()) {
+                if (exc.getExcursionId() == excId) {
+                    currentExcursion = exc;
+                    repository.delete(currentExcursion);
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item);

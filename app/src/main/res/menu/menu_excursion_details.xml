@@ -4,6 +4,7 @@
 
     <item android:title="Save Excursion"
         android:id="@+id/excursion_save"/>
-    <item android:title="Item" />
+    <item android:title="Delete Excursion"
+        android:id="@+id/excursion_delete"/>
     <item android:title="Item" />
 </menu>
