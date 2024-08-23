@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.d308vacationplanner.R;
 import com.example.d308vacationplanner.entities.Vacation;
 
-import java.util.Date;
 import java.util.List;
 
 public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.VacationViewHolder> {
@@ -32,7 +31,7 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
                 final Vacation current = mVacations.get(position);
                 Intent intent = new Intent(context, VacationDetails.class);
                 intent.putExtra("id", current.getVacationId());
-                intent.putExtra("title", current.getTitle());
+                intent.putExtra("title", current.getVacationTitle());
                 intent.putExtra("hotel", current.getHotel());
                 intent.putExtra("startDate", current.getStartDate().toString());
                 intent.putExtra("endDate", current.getEndDate().toString());
@@ -52,7 +51,7 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
     public void onBindViewHolder(@NonNull VacationAdapter.VacationViewHolder holder, int position) {
         if (mVacations != null) {
             Vacation current = mVacations.get(position);
-            String name = current.getTitle();
+            String name = current.getVacationTitle();
             holder.vacationItemView.setText(name);
         } else {
             holder.vacationItemView.setText("Vacation not found.");

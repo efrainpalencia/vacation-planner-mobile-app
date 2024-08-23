@@ -19,7 +19,7 @@ public class Vacation {
 
     @NonNull
     @ColumnInfo(name = "title")
-    private String title;
+    private String vacationTitle;
 
     @ColumnInfo(name = "hotel")
     private String hotel;
@@ -32,9 +32,9 @@ public class Vacation {
     @TypeConverters(Converters.class)
     private Date endDate;
 
-    public Vacation(int vacationId, @NonNull String title, String hotel, Date startDate, Date endDate) {
+    public Vacation(int vacationId, @NonNull String vacationTitle, String hotel, Date startDate, Date endDate) {
         this.vacationId = vacationId;
-        this.title = title;
+        this.vacationTitle = vacationTitle;
         this.hotel = hotel;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -49,12 +49,12 @@ public class Vacation {
     }
 
     @NonNull
-    public String getTitle() {
-        return title;
+    public String getVacationTitle() {
+        return vacationTitle;
     }
 
-    public void setTitle(@NonNull String title) {
-        this.title = title;
+    public void setVacationTitle(@NonNull String vacationtitle) {
+        this.vacationTitle = vacationtitle;
     }
 
     public String getHotel() {

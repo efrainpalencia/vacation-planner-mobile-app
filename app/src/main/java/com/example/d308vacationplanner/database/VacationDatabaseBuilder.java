@@ -13,7 +13,7 @@ import com.example.d308vacationplanner.database.converters.Converters;
 import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.entities.Vacation;
 
-@Database(entities = {Vacation.class, Excursion.class}, version = 2, exportSchema = false)
+@Database(entities = {Vacation.class, Excursion.class}, version = 3, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class VacationDatabaseBuilder extends RoomDatabase {
     public abstract VacationDao vacationDao();

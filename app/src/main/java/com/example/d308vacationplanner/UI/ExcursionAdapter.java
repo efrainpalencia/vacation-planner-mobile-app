@@ -13,7 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.d308vacationplanner.R;
 import com.example.d308vacationplanner.entities.Excursion;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.ExcursionViewHolder> {
     private List<Excursion> mExcursions;
@@ -33,8 +37,10 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
                 int position = getAdapterPosition();
                 final Excursion current = mExcursions.get(position);
                 Intent intent = new Intent(context, ExcursionDetails.class);
-                intent.putExtra("title", current.getTitle());
+                intent.putExtra("excursionTitle", current.getExcursionTitle());
                 intent.putExtra("date", current.getDate());
+                intent.putExtra("id", current.getExcursionId());
+                intent.putExtra("vacId", current.getVacationId());
                 context.startActivity(intent);
             });
 
@@ -53,11 +59,23 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
 
         if (mExcursions != null) {
             Excursion current = mExcursions.get(position);
-            String name = current.getTitle();
-            int prodId = current.getVacationId();
-            String strProdId = String.valueOf(prodId);
+            String name = current.getExcursionTitle();
+            String currentExcDate = current.getDate().toString();
+            SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+            SimpleDateFormat newFormat = new SimpleDateFormat("EEE MMM dd yyyy", Locale.US);
+            String newExcDate = null;
+
+            try {
+                Date excDate = originalFormat.parse(currentExcDate);
+                assert excDate != null;
+                newExcDate = newFormat.format(excDate);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+
             holder.excursionItemView.setText(name);
-            holder.excursionItemView2.setText(strProdId);
+            holder.excursionItemView2.setText(newExcDate);
         } else {
             holder.excursionItemView.setText("No excursion found.");
             holder.excursionItemView.setText("No Vacation Id found.");

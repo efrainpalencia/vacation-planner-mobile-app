@@ -1,10 +1,7 @@
 package com.example.d308vacationplanner.entities;
 
-import static androidx.room.ForeignKey.CASCADE;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -21,7 +18,7 @@ public class Excursion {
 
     @ColumnInfo(name = "title")
     @TypeConverters(Converters.class)
-    private String title;
+    private String excursionTitle;
 
     @ColumnInfo(name = "date")
     @TypeConverters(Converters.class)
@@ -35,9 +32,9 @@ public class Excursion {
     @ColumnInfo(name = "vacation_id")
     private int vacationId;
 
-    public Excursion(int excursionId, String title,  Date date, int vacationId) {
+    public Excursion(int excursionId, String excursionTitle, Date date, int vacationId) {
         this.excursionId = excursionId;
-        this.title = title;
+        this.excursionTitle = excursionTitle;
         this.date = date;
         this.vacationId = vacationId;
     }
@@ -50,12 +47,12 @@ public class Excursion {
         this.excursionId = excursionId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getExcursionTitle() {
+        return excursionTitle;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setExcursionTitle(String excursionTitle) {
+        this.excursionTitle = excursionTitle;
     }
 
     public Date getDate() {

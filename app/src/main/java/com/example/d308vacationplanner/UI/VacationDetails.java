@@ -27,7 +27,6 @@ import com.example.d308vacationplanner.database.Repository;
 import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,7 +41,7 @@ import java.util.Objects;
 public class VacationDetails extends AppCompatActivity {
     Repository repository;
 
-    String title;
+    String vacationTitle;
     String hotel;
     String oldStartDate;
     String oldEndDate;
@@ -66,9 +65,33 @@ public class VacationDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_vacation_details);
-        title = getIntent().getStringExtra("title");
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton2);
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(VacationDetails.this, ExcursionDetails.class);
+            intent.putExtra("vacId", vacationId);
+            startActivity(intent);
+
+
+        });
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
+        repository = new Repository(getApplication());
+        final ExcursionAdapter excursionAdapter = new ExcursionAdapter(this);
+        recyclerView.setAdapter(excursionAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        List<Excursion> filteredExcursions = new ArrayList<>();
+        for (Excursion e : repository.getAllExcursions()) {
+            if (e.getVacationId() == vacationId) filteredExcursions.add(e);
+        }
+        excursionAdapter.setExcursions(filteredExcursions);
+
+        vacationTitle = getIntent().getStringExtra("title");
         editTitle = findViewById(R.id.title_text_input);
-        editTitle.setText(title);
+        editTitle.setText(vacationTitle);
         hotel = getIntent().getStringExtra("hotel");
         editHotel = findViewById(R.id.hotel_text_input);
         editHotel.setText(hotel);
@@ -162,32 +185,6 @@ public class VacationDetails extends AppCompatActivity {
         };
         vacationId = getIntent().getIntExtra("id", -1);
 
-        FloatingActionButton fab = findViewById(R.id.floatingActionButton2);
-        fab.setOnClickListener(view -> {
-            Intent intent = new Intent(VacationDetails.this, ExcursionDetails.class);
-            intent.putExtra("vacId", vacationId);
-            startActivity(intent);
-
-
-        });
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
-        repository = new Repository(getApplication());
-        List<Excursion> allExcursions = repository.getAllExcursions();
-        final ExcursionAdapter excursionAdapter = new ExcursionAdapter(this);
-        recyclerView.setAdapter(excursionAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        excursionAdapter.setExcursions(allExcursions);
-        List<Excursion> filteredExcursions = new ArrayList<>();
-        for (Excursion e : repository.getAllExcursions()) {
-            if (e.getVacationId() == vacationId) filteredExcursions.add(e);
-        }
-        excursionAdapter.setExcursions(filteredExcursions);
     }
 
     private void updateLabelStart() {
@@ -241,13 +238,13 @@ public class VacationDetails extends AppCompatActivity {
                 }
                 vacation = new Vacation(vacationId, editTitle.getText().toString(), editHotel.getText().toString(), startDate, endDate);
                 repository.insert(vacation);
-                Toast.makeText(VacationDetails.this, vacation.getTitle() + " was saved", Toast.LENGTH_LONG).show();
+                Toast.makeText(VacationDetails.this, vacation.getVacationTitle() + " was saved", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, VacationList.class);
                 startActivity(intent);
             } else {
                 vacation = new Vacation(vacationId, editTitle.getText().toString(), editHotel.getText().toString(), startDate, endDate);
                 repository.update(vacation);
-                Toast.makeText(VacationDetails.this, vacation.getTitle() + " was updated", Toast.LENGTH_LONG).show();
+                Toast.makeText(VacationDetails.this, vacation.getVacationTitle() + " was updated", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, VacationList.class);
                 startActivity(intent);
             }
@@ -259,7 +256,7 @@ public class VacationDetails extends AppCompatActivity {
                 if (vac.getVacationId() == vacationId) {
                     currentVacation = vac;
                     repository.delete(currentVacation);
-                    Toast.makeText(VacationDetails.this, currentVacation.getTitle() + " was deleted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(VacationDetails.this, currentVacation.getVacationTitle() + " was deleted", Toast.LENGTH_LONG).show();
 
                     Intent intent = new Intent(this, VacationList.class);
                     startActivity(intent);
@@ -282,7 +279,7 @@ public class VacationDetails extends AppCompatActivity {
             assert myStartDate != null;
 
             Long triggerStartDate = myStartDate.getTime();
-            String message = String.format("Your %s vacation is starting", title);
+            String message = String.format("Your %s vacation is starting", vacationTitle);
 
             Intent intent = new Intent(VacationDetails.this, AppReceiver.class);
             intent.putExtra("key", message);
@@ -307,7 +304,7 @@ public class VacationDetails extends AppCompatActivity {
             assert myEndDate != null;
 
             Long triggerEndDate = myEndDate.getTime();
-            String message = String.format("Your %s vacation is ending", title);
+            String message = String.format("Your %s vacation is ending", vacationTitle);
             Intent intent = new Intent(VacationDetails.this, AppReceiver.class);
             intent.putExtra("key", message);
             PendingIntent sender = PendingIntent.getBroadcast(VacationDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
@@ -332,7 +329,7 @@ public class VacationDetails extends AppCompatActivity {
             } catch (ParseException e) {
                 System.out.println(e.getMessage());
             }
-            String message = String.format("Hi! Check out this message from Tripfesto - Vacation Planner:\nVacation Details\nDestination:\n %s\n\nHotel Accommodations:\n%s\n\nStart date:\n%s\n\nEnd Date:\n%s\n\n", title, hotel, newStartDate, newEndDate);
+            String message = String.format("Hi! Check out this message from Tripfesto - Vacation Planner:\nVacation Details\nDestination:\n %s\n\nHotel Accommodations:\n%s\n\nStart date:\n%s\n\nEnd Date:\n%s\n\n", vacationTitle, hotel, newStartDate, newEndDate);
 
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);

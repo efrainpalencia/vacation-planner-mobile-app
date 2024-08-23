@@ -72,7 +72,7 @@ public class VacationList extends AppCompatActivity {
         if (item.getItemId() == R.id.item_01) {
             Repository repo = new Repository(getApplication());
 //            Toast.makeText(VacationList.this, "item 1 pressed", Toast.LENGTH_LONG).show();
-            Vacation vacation = new Vacation(0, "Cap Cana", "Landon", new Date(2024, 10, 5), new Date(2024, 10, 15));
+            Vacation vacation = new Vacation(0, "Cap Cana", "The Sanctuary", new Date(2024, 10, 5), new Date(2024, 10, 15));
             repo.insert(vacation);
             Excursion excursion = new Excursion(0, "Snorkeling", new Date(2024, 10, 7), 0);
             repo.insert(excursion);
