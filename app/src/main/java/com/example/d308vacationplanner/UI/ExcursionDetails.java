@@ -46,10 +46,17 @@ public class ExcursionDetails extends AppCompatActivity {
     String excursionTitle;
     String oldDate;
 
+    String editMinDate;
+    String editMaxDate;
+    Date formattedMinDate;
+    Date formattedMaxDate;
+
     EditText editExcursionTitle;
     TextView editExcursionDate;
 
     DatePickerDialog.OnDateSetListener excursionDate;
+    Calendar calendarMin;
+    Calendar calendarMax;
     final Calendar myCalendarDate = Calendar.getInstance();
 
     @Override
@@ -69,6 +76,7 @@ public class ExcursionDetails extends AppCompatActivity {
         editExcursionTitle.setText(excursionTitle);
         excId = getIntent().getIntExtra("id", -1);
         vacId = getIntent().getIntExtra("vacId", -1);
+        System.out.println(vacId);
 
         editExcursionDate = findViewById(R.id.excursion_date);
         String formatter = "M/d/yyyy";
@@ -82,6 +90,39 @@ public class ExcursionDetails extends AppCompatActivity {
         ArrayAdapter<Integer> vacationIdAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, vacationIdList);
         Spinner spinner = findViewById(R.id.spinner);
         spinner.setAdapter(vacationIdAdapter);
+
+        // Exposes the start and end date, creates a Calender instance for DatePicker min and max
+        for (Vacation vacation : vacationArrayList) {
+            if (vacation.getVacationId() == vacId) {
+                editMinDate = String.valueOf(vacation.getStartDate());
+                editMaxDate = String.valueOf(vacation.getEndDate());
+                SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+                try {
+                    // formats Date
+                    Date dateMin = originalFormat.parse(editMinDate);
+                    assert dateMin != null;
+
+                    // creates Calender instance
+                    calendarMin = Calendar.getInstance();
+                    calendarMin.setTime(dateMin);
+
+                    // formats date
+                    Date dateMax = originalFormat.parse(editMaxDate);
+                    assert dateMax != null;
+
+                    // create Calender instance
+                    calendarMax = Calendar.getInstance();
+                    calendarMax.setTime(dateMax);
+
+
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.printf("Min date: %s\nMax date: %s\n", calendarMin, calendarMax);
+
+            }
+
+        }
 
         oldDate = getIntent().getStringExtra("date");
         if (oldDate != null) {
@@ -107,7 +148,7 @@ public class ExcursionDetails extends AppCompatActivity {
                 LocalDate date = LocalDate.now();
                 String info = editExcursionDate.getText().toString();
                 if (info.isEmpty()) {
-                    info = String.valueOf(date);
+                    info = String.valueOf(calendarMin.getTimeInMillis());
                 }
                 try {
                     myCalendarDate.setTime(Objects.requireNonNull(sdf.parse(info)));
@@ -115,12 +156,10 @@ public class ExcursionDetails extends AppCompatActivity {
                     System.out.println(e.getMessage());
                 }
 
-                String setStartDate = getIntent().getStringExtra("startDate");
-                String setEndDate = getIntent().getStringExtra("endDate");
 
                 DatePickerDialog startDatePicker = new DatePickerDialog(ExcursionDetails.this, excursionDate, myCalendarDate.get(Calendar.YEAR), myCalendarDate.get(Calendar.MONTH), myCalendarDate.get(Calendar.DAY_OF_MONTH));
-                startDatePicker.getDatePicker().setMinDate(Long.parseLong(setStartDate));
-                startDatePicker.getDatePicker().setMaxDate(Long.parseLong(setEndDate));
+                startDatePicker.getDatePicker().setMinDate(calendarMin.getTimeInMillis());
+                startDatePicker.getDatePicker().setMaxDate(calendarMax.getTimeInMillis());
                 startDatePicker.show();
 
             }
@@ -176,20 +215,30 @@ public class ExcursionDetails extends AppCompatActivity {
                     excId = 1;
                     excursion = new Excursion(excId, editExcursionTitle.getText().toString(), excursionDate, vacId);
                     repository.insert(excursion);
+
+                    Toast.makeText(ExcursionDetails.this, excursion.getExcursionTitle() + " was updated", Toast.LENGTH_LONG).show();
+                    Intent intentOnResume = new Intent(this, VacationDetails.class);
+                    startActivity(intentOnResume);
+                    return true;
                 } else {
                     excId = repository.getAllExcursions().get(repository.getAllExcursions().size() - 1).getExcursionId() + 1;
                     excursion = new Excursion(excId, editExcursionTitle.getText().toString(), excursionDate, vacId);
                     repository.insert(excursion);
+
+                    Toast.makeText(ExcursionDetails.this, excursion.getExcursionTitle() + " was saved", Toast.LENGTH_LONG).show();
+                    Intent intentOnResume = new Intent(this, VacationDetails.class);
+                    startActivity(intentOnResume);
+                    return true;
                 }
             } else {
                 excursion = new Excursion(excId, editExcursionTitle.getText().toString(), excursionDate, vacId);
                 repository.update(excursion);
-            }
 
-            Toast.makeText(ExcursionDetails.this, currentExcursion.getExcursionTitle() + "was saved", Toast.LENGTH_LONG).show();
-            Intent intentOnResume = new Intent(this, VacationDetails.class);
-            startActivity(intentOnResume);
-            return true;
+                Toast.makeText(ExcursionDetails.this, excursion.getExcursionTitle() + " was updated", Toast.LENGTH_LONG).show();
+                Intent intentOnResume = new Intent(this, VacationDetails.class);
+                startActivity(intentOnResume);
+                return true;
+            }
         }
 
         if (item.getItemId() == R.id.excursion_delete) {
@@ -197,7 +246,7 @@ public class ExcursionDetails extends AppCompatActivity {
                 if (exc.getExcursionId() == excId) {
                     currentExcursion = exc;
                     repository.delete(currentExcursion);
-                    Toast.makeText(ExcursionDetails.this, currentExcursion.getExcursionTitle() + "was deleted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ExcursionDetails.this, currentExcursion.getExcursionTitle() + " was deleted", Toast.LENGTH_LONG).show();
                 }
             }
             Intent intentOnResume = new Intent(this, VacationDetails.class);
