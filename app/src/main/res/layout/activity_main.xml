@@ -9,6 +9,7 @@
     tools:context=".UI.MainActivity">
 
     <TextView
+        android:id="@+id/textView12"
         android:layout_width="322dp"
         android:layout_height="127dp"
         android:fontFamily="serif-monospace"

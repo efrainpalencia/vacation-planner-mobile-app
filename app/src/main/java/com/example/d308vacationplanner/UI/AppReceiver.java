@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.example.d308vacationplanner.R;
@@ -28,7 +27,7 @@ public class AppReceiver extends BroadcastReceiver {
         Notification n = new NotificationCompat.Builder(context, channel_id)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentText(intent.getStringExtra("key"))
-                .setContentTitle("Test Notification").build();
+                .setContentTitle("Notification from: Tripfest!").build();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(notificationId++, n);
     }

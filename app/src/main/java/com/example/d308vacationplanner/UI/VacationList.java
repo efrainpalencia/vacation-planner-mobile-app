@@ -1,12 +1,13 @@
 package com.example.d308vacationplanner.UI;
 
-import android.app.Application;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -34,8 +35,8 @@ public class VacationList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_vacation_list);
-        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
 
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(VacationList.this, VacationDetails.class);
             startActivity(intent);
@@ -53,6 +54,7 @@ public class VacationList extends AppCompatActivity {
         recyclerView.setAdapter(vacationAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         vacationAdapter.setVacations(allVacations);
+
     }
 
     @Override
@@ -74,7 +76,7 @@ public class VacationList extends AppCompatActivity {
 //            Toast.makeText(VacationList.this, "item 1 pressed", Toast.LENGTH_LONG).show();
             Vacation vacation = new Vacation(0, "Cap Cana", "The Sanctuary", new Date(2024, 10, 5), new Date(2024, 10, 15));
             repo.insert(vacation);
-            Excursion excursion = new Excursion(0, "Snorkeling", new Date(2024, 10, 7), 0);
+            Excursion excursion = new Excursion(-1, "Snorkeling", new Date(2024, 10, 7), -1);
             repo.insert(excursion);
 
             List<Vacation> allVacations = repository.getAllVacations();

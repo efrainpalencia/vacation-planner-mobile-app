@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -133,55 +131,43 @@ public class VacationDetails extends AppCompatActivity {
 
         SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy", Locale.US);
         editStartDate = findViewById(R.id.start_text_input);
-        editStartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LocalDate date = LocalDate.now();
-                String info = editStartDate.getText().toString();
-                if (info.isEmpty()) {
-                    info = String.valueOf(date);
-                }
-                try {
-                    myCalenderStart.setTime(Objects.requireNonNull(sdf.parse(info)));
-                } catch (ParseException e) {
-                    System.out.println(e.getMessage());
-                }
-
-                DatePickerDialog startDatePicker = new DatePickerDialog(VacationDetails.this, startDate, myCalenderStart.get(Calendar.YEAR), myCalenderStart.get(Calendar.MONTH), myCalenderStart.get(Calendar.DAY_OF_MONTH));
-                startDatePicker.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
-                startDatePicker.show();
-
+        editStartDate.setOnClickListener(view -> {
+            LocalDate date = LocalDate.now();
+            String info = editStartDate.getText().toString();
+            if (info.isEmpty()) {
+                info = String.valueOf(date);
             }
+            try {
+                myCalenderStart.setTime(Objects.requireNonNull(sdf.parse(info)));
+            } catch (ParseException e) {
+                System.out.println(e.getMessage());
+            }
+
+            DatePickerDialog startDatePicker = new DatePickerDialog(VacationDetails.this, startDate, myCalenderStart.get(Calendar.YEAR), myCalenderStart.get(Calendar.MONTH), myCalenderStart.get(Calendar.DAY_OF_MONTH));
+            startDatePicker.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+            startDatePicker.show();
+
         });
-        startDate = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                myCalenderStart.set(Calendar.YEAR, year);
-                myCalenderStart.set(Calendar.MONTH, month);
-                myCalenderStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabelStart();
+        startDate = (datePicker, year, month, dayOfMonth) -> {
+            myCalenderStart.set(Calendar.YEAR, year);
+            myCalenderStart.set(Calendar.MONTH, month);
+            myCalenderStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabelStart();
 
-            }
         };
 
         editEndDate = findViewById(R.id.end_text_input);
-        editEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        editEndDate.setOnClickListener(view -> {
 
-              DatePickerDialog endDatePicker = new DatePickerDialog(VacationDetails.this, endDate, myCalenderEnd.get(Calendar.YEAR), myCalenderEnd.get(Calendar.MONTH), myCalenderEnd.get(Calendar.DAY_OF_MONTH));
-                endDatePicker.getDatePicker().setMinDate(myCalenderStart.getTimeInMillis());
-                endDatePicker.show();
-            }
+          DatePickerDialog endDatePicker = new DatePickerDialog(VacationDetails.this, endDate, myCalenderEnd.get(Calendar.YEAR), myCalenderEnd.get(Calendar.MONTH), myCalenderEnd.get(Calendar.DAY_OF_MONTH));
+            endDatePicker.getDatePicker().setMinDate(myCalenderStart.getTimeInMillis());
+            endDatePicker.show();
         });
-        endDate = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                myCalenderEnd.set(Calendar.YEAR, year);
-                myCalenderEnd.set(Calendar.MONTH, month);
-                myCalenderEnd.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    updateLabelEnd();
-            }
+        endDate = (datePicker, year, month, dayOfMonth) -> {
+            myCalenderEnd.set(Calendar.YEAR, year);
+            myCalenderEnd.set(Calendar.MONTH, month);
+            myCalenderEnd.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabelEnd();
         };
         vacationId = getIntent().getIntExtra("id", -1);
 
@@ -287,6 +273,8 @@ public class VacationDetails extends AppCompatActivity {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, triggerStartDate, sender);
 
+            Toast.makeText(VacationDetails.this, "You will be notified at the start of your " + vacationTitle + " vacation", Toast.LENGTH_LONG).show();
+
             return true;
         }
 
@@ -311,6 +299,8 @@ public class VacationDetails extends AppCompatActivity {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, triggerEndDate, sender);
 
+            Toast.makeText(VacationDetails.this, "You will be notified at the end of your " + vacationTitle + " vacation", Toast.LENGTH_LONG).show();
+
             return true;
         }
 
@@ -329,12 +319,12 @@ public class VacationDetails extends AppCompatActivity {
             } catch (ParseException e) {
                 System.out.println(e.getMessage());
             }
-            String message = String.format("Hi! Check out this message from Tripfesto - Vacation Planner:\nVacation Details\nDestination:\n %s\n\nHotel Accommodations:\n%s\n\nStart date:\n%s\n\nEnd Date:\n%s\n\n", vacationTitle, hotel, newStartDate, newEndDate);
+            String message = String.format("Hi! Check out this message from Tripfest - Vacation Planner:\nVacation Details\nDestination:\n %s\n\nHotel Accommodations:\n%s\n\nStart date:\n%s\n\nEnd Date:\n%s\n\n", vacationTitle, hotel, newStartDate, newEndDate);
 
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, message);
-            sendIntent.putExtra(Intent.EXTRA_TITLE, "Text Message from Tripfesto");
+            sendIntent.putExtra(Intent.EXTRA_TITLE, "Text Message from Tripfest");
             sendIntent.setType("text/plain");
 
             Intent shareIntent = Intent.createChooser(sendIntent, null);

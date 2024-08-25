@@ -63,7 +63,6 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
             String currentExcDate = current.getDate().toString();
             String newExcDate = getNewExcDate(currentExcDate);
 
-
             holder.excursionItemView.setText(name);
             holder.excursionItemView2.setText(newExcDate);
         } else {
@@ -75,7 +74,7 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
     private static @NonNull String getNewExcDate(String currentExcDate) {
         SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
         SimpleDateFormat newFormat = new SimpleDateFormat("EEE MMM dd yyyy", Locale.US);
-        String newExcDate = null;
+        String newExcDate;
 
         try {
             Date excDate = originalFormat.parse(currentExcDate);
