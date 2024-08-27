@@ -32,8 +32,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class VacationDetails extends AppCompatActivity {
@@ -45,6 +47,8 @@ public class VacationDetails extends AppCompatActivity {
     String oldEndDate;
 
     int vacationId;
+    int numExcursions;
+
     Vacation currentVacation;
 
     EditText editTitle;
@@ -241,12 +245,20 @@ public class VacationDetails extends AppCompatActivity {
             for (Vacation vac : repository.getAllVacations()) {
                 if (vac.getVacationId() == vacationId) {
                     currentVacation = vac;
-                    repository.delete(currentVacation);
-                    Toast.makeText(VacationDetails.this, currentVacation.getVacationTitle() + " was deleted", Toast.LENGTH_LONG).show();
-
-                    Intent intent = new Intent(this, VacationList.class);
-                    startActivity(intent);
                 }
+            }
+            numExcursions = 0;
+            for (Excursion excursion : repository.getAllExcursions()) {
+                if (excursion.getVacationId() == vacationId) {
+                    ++numExcursions;
+                }
+            }
+            if (numExcursions == 0) {
+                repository.delete(currentVacation);
+                Toast.makeText(VacationDetails.this, currentVacation.getVacationTitle() + " was deleted", Toast.LENGTH_LONG).show();
+                finish();
+            } else {
+                Toast.makeText(VacationDetails.this, "can't delete the vacation with excursions", Toast.LENGTH_LONG).show();
             }
             return true;
         }

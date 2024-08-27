@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -24,8 +26,11 @@ import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class VacationList extends AppCompatActivity {
     private Repository repository;
@@ -47,14 +52,30 @@ public class VacationList extends AppCompatActivity {
             return insets;
         });
 
-        RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
         repository = new Repository(getApplication());
-        List<Vacation> allVacations = repository.getAllVacations();
-        final VacationAdapter vacationAdapter = new VacationAdapter(this);
-        recyclerView.setAdapter(vacationAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        vacationAdapter.setVacations(allVacations);
+        List<Vacation> checkVacationList = repository.getAllVacations();
+        TextView emptyView = findViewById(R.id.empty_view);
+        if (checkVacationList.isEmpty()) {
+            emptyView.setVisibility(View.VISIBLE);
+            RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
+            recyclerView.setVisibility(View.GONE);
+            repository = new Repository(getApplication());
+            List<Vacation> allVacations = repository.getAllVacations();
+            final VacationAdapter vacationAdapter = new VacationAdapter(this);
+            recyclerView.setAdapter(vacationAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            vacationAdapter.setVacations(allVacations);
 
+        } else {
+            emptyView.setVisibility(View.GONE);
+            RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
+            repository = new Repository(getApplication());
+            List<Vacation> allVacations = repository.getAllVacations();
+            final VacationAdapter vacationAdapter = new VacationAdapter(this);
+            recyclerView.setAdapter(vacationAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            vacationAdapter.setVacations(allVacations);
+        }
     }
 
     @Override
@@ -73,34 +94,59 @@ public class VacationList extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.item_01) {
             Repository repo = new Repository(getApplication());
-//            Toast.makeText(VacationList.this, "item 1 pressed", Toast.LENGTH_LONG).show();
-            Vacation vacation = new Vacation(0, "Cap Cana", "The Sanctuary", new Date(2024, 10, 5), new Date(2024, 10, 15));
+            Vacation vacation = new Vacation(1, "Wedding Anniversary trip to Cap Cana", "The Sanctuary", createDate(2024, 7, 1), createDate(2024, 7, 7));
             repo.insert(vacation);
-            Excursion excursion = new Excursion(-1, "Snorkeling", new Date(2024, 10, 7), -1);
+            Excursion excursion = new Excursion(1, "Snorkeling", createDate(2024, 7,3), 1);
             repo.insert(excursion);
 
-            List<Vacation> allVacations = repository.getAllVacations();
-            RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
-            final VacationAdapter vacationAdapter = new VacationAdapter(this);
-            recyclerView.setAdapter(vacationAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            vacationAdapter.setVacations(allVacations);
+            Intent intent = new Intent(VacationList.this, VacationList.class);
+            startActivity(intent);
 
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public Date createDate(int year, int month, int dayOfMonth) {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        Date date = calendar.getTime();
+
+        return date;
+    };
+
     @Override
     protected void onResume() {
 
         super.onResume();
-        List<Vacation> allVacations = repository.getAllVacations();
-        RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
-        final VacationAdapter vacationAdapter = new VacationAdapter(this);
-        recyclerView.setAdapter(vacationAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        vacationAdapter.setVacations(allVacations);
+        repository = new Repository(getApplication());
+        List<Vacation> checkVacationList = repository.getAllVacations();
+        TextView emptyView = findViewById(R.id.empty_view);
+        if (checkVacationList.isEmpty()) {
+            emptyView.setVisibility(View.VISIBLE);
+            RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
+            recyclerView.setVisibility(View.GONE);
+            repository = new Repository(getApplication());
+            List<Vacation> allVacations = repository.getAllVacations();
+            final VacationAdapter vacationAdapter = new VacationAdapter(this);
+            recyclerView.setAdapter(vacationAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            vacationAdapter.setVacations(allVacations);
+
+        } else {
+            emptyView.setVisibility(View.GONE);
+            RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
+            repository = new Repository(getApplication());
+            List<Vacation> allVacations = repository.getAllVacations();
+            final VacationAdapter vacationAdapter = new VacationAdapter(this);
+            recyclerView.setAdapter(vacationAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            vacationAdapter.setVacations(allVacations);
+        }
 
     }
 }

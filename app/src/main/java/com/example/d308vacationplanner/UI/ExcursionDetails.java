@@ -260,7 +260,7 @@ public class ExcursionDetails extends AppCompatActivity {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, triggerDate, sender);
 
-            Toast.makeText(ExcursionDetails.this, "You will be notified on the date of your " + excursionTitle + "excursion", Toast.LENGTH_LONG).show();
+            Toast.makeText(ExcursionDetails.this, "You will be notified on the date of your " + excursionTitle + " excursion", Toast.LENGTH_LONG).show();
             finish();
 
             return true;

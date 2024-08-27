@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="company_name">Tripfest</string>
-    <string name="app_name">D308 Vacation Planner</string>
+    <string name="app_name">Tripfest</string>
     <string name="travel_logo">Travel Logo</string>
     <string name="plan_your_vacation">
         Are you looking to plan a trip? Let us help you manifest your dream vacation!
@@ -11,7 +11,6 @@
         Click on this to add a vacation to the list.
     </string>
     <string name="menu_item_01">Add sample data</string>
-    <string name="menu_item_02">Item 2</string>
     <string name="scrollable_view_details">Scrollable view for vacation details</string>
     <string name="vacation_title">Title</string>
     <string name="vacation_hotel">Hotel</string>
@@ -26,4 +25,17 @@
     <string name="scrollable_excursion_details_view">Scollable exursion details view</string>
     <string name="channel_name">Date Notification Channel</string>
     <string name="channel_description">This channel sends a notification to the user about their scheduled vacation start and dates. Additionally, any excursion activity dates that the user may have selected.</string>
+    <string name="empty_list_message">No items available. Click the + button below to add a vacation.</string>
+    <string name="select_a_start_date">Select a start date.</string>
+    <string name="select_an_end_date">Select an end date.</string>
+    <string name="excursion">Excursion</string>
+    <string name="date">Date</string>
+    <string name="select_a_date">Select a date.</string>
+    <string name="select_an_associated_vacation_below">Select an associated vacation below</string>
+    <string name="update_save">Update/Save</string>
+    <string name="delete">Delete</string>
+    <string name="set_start_date_notification">Set Start Date Notification</string>
+    <string name="set_end_date_notification">Set End Date Notification</string>
+    <string name="share">Share</string>
+    <string name="set_excursion_notification">Set Excursion Notification</string>
 </resources>
